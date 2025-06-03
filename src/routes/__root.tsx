@@ -82,7 +82,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
           <Link
             to="/login"
             activeProps={{
-              className: 'font-bold',
+              className: 'font-bold text-brand-primary',
             }}
             activeOptions={{ exact: true }}
           >
@@ -91,13 +91,12 @@ function RootDocument({ children }: { children: React.ReactNode }) {
           <Link
             to="/apps"
             activeProps={{
-              className: 'font-bold',
+              className: 'font-bold text-brand-primary',
             }}
           >
             Apps
           </Link>
         </div>
-        <hr />
         {children}
         <TanStackRouterDevtools position="bottom-right" />
         <Scripts />
