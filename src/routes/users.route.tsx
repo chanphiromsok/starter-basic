@@ -1,6 +1,6 @@
 import { Link, Outlet, createFileRoute } from '@tanstack/react-router'
-import { DEPLOY_URL } from '../utils/users'
 import type { User } from '../utils/users'
+import { DEPLOY_URL } from '../utils/users'
 
 export const Route = createFileRoute('/users')({
   loader: async () => {
@@ -47,7 +47,7 @@ function UsersLayoutComponent() {
         })}
       </ul>
       <hr />
-      <Outlet />
+      <Outlet /> {/* This is render users.index.ts */}
     </div>
   )
 }

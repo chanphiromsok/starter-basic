@@ -12,15 +12,17 @@
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as RedirectImport } from './routes/redirect'
-import { Route as DeferredImport } from './routes/deferred'
+import { Route as LoginImport } from './routes/login'
 import { Route as PathlessLayoutImport } from './routes/_pathlessLayout'
 import { Route as UsersRouteImport } from './routes/users.route'
 import { Route as PostsRouteImport } from './routes/posts.route'
-import { Route as IndexImport } from './routes/index'
+import { Route as AppsRouteImport } from './routes/apps.route'
 import { Route as UsersIndexImport } from './routes/users.index'
 import { Route as PostsIndexImport } from './routes/posts.index'
+import { Route as AppsIndexImport } from './routes/apps.index'
 import { Route as UsersUserIdImport } from './routes/users.$userId'
 import { Route as PostsPostIdImport } from './routes/posts.$postId'
+import { Route as AppsAppIdImport } from './routes/apps.$appId'
 import { Route as PathlessLayoutNestedLayoutImport } from './routes/_pathlessLayout/_nested-layout'
 import { Route as PostsPostIdDeepImport } from './routes/posts_.$postId.deep'
 import { Route as PathlessLayoutNestedLayoutRouteBImport } from './routes/_pathlessLayout/_nested-layout/route-b'
@@ -34,9 +36,9 @@ const RedirectRoute = RedirectImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const DeferredRoute = DeferredImport.update({
-  id: '/deferred',
-  path: '/deferred',
+const LoginRoute = LoginImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -57,9 +59,9 @@ const PostsRouteRoute = PostsRouteImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const IndexRoute = IndexImport.update({
-  id: '/',
-  path: '/',
+const AppsRouteRoute = AppsRouteImport.update({
+  id: '/apps',
+  path: '/apps',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -75,6 +77,12 @@ const PostsIndexRoute = PostsIndexImport.update({
   getParentRoute: () => PostsRouteRoute,
 } as any)
 
+const AppsIndexRoute = AppsIndexImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppsRouteRoute,
+} as any)
+
 const UsersUserIdRoute = UsersUserIdImport.update({
   id: '/$userId',
   path: '/$userId',
@@ -85,6 +93,12 @@ const PostsPostIdRoute = PostsPostIdImport.update({
   id: '/$postId',
   path: '/$postId',
   getParentRoute: () => PostsRouteRoute,
+} as any)
+
+const AppsAppIdRoute = AppsAppIdImport.update({
+  id: '/$appId',
+  path: '/$appId',
+  getParentRoute: () => AppsRouteRoute,
 } as any)
 
 const PathlessLayoutNestedLayoutRoute = PathlessLayoutNestedLayoutImport.update(
@@ -118,11 +132,11 @@ const PathlessLayoutNestedLayoutRouteARoute =
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexImport
+    '/apps': {
+      id: '/apps'
+      path: '/apps'
+      fullPath: '/apps'
+      preLoaderRoute: typeof AppsRouteImport
       parentRoute: typeof rootRoute
     }
     '/posts': {
@@ -146,11 +160,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PathlessLayoutImport
       parentRoute: typeof rootRoute
     }
-    '/deferred': {
-      id: '/deferred'
-      path: '/deferred'
-      fullPath: '/deferred'
-      preLoaderRoute: typeof DeferredImport
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginImport
       parentRoute: typeof rootRoute
     }
     '/redirect': {
@@ -167,6 +181,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PathlessLayoutNestedLayoutImport
       parentRoute: typeof PathlessLayoutImport
     }
+    '/apps/$appId': {
+      id: '/apps/$appId'
+      path: '/$appId'
+      fullPath: '/apps/$appId'
+      preLoaderRoute: typeof AppsAppIdImport
+      parentRoute: typeof AppsRouteImport
+    }
     '/posts/$postId': {
       id: '/posts/$postId'
       path: '/$postId'
@@ -180,6 +201,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/users/$userId'
       preLoaderRoute: typeof UsersUserIdImport
       parentRoute: typeof UsersRouteImport
+    }
+    '/apps/': {
+      id: '/apps/'
+      path: '/'
+      fullPath: '/apps/'
+      preLoaderRoute: typeof AppsIndexImport
+      parentRoute: typeof AppsRouteImport
     }
     '/posts/': {
       id: '/posts/'
@@ -220,6 +248,20 @@ declare module '@tanstack/react-router' {
 }
 
 // Create and export the route tree
+
+interface AppsRouteRouteChildren {
+  AppsAppIdRoute: typeof AppsAppIdRoute
+  AppsIndexRoute: typeof AppsIndexRoute
+}
+
+const AppsRouteRouteChildren: AppsRouteRouteChildren = {
+  AppsAppIdRoute: AppsAppIdRoute,
+  AppsIndexRoute: AppsIndexRoute,
+}
+
+const AppsRouteRouteWithChildren = AppsRouteRoute._addFileChildren(
+  AppsRouteRouteChildren,
+)
 
 interface PostsRouteRouteChildren {
   PostsPostIdRoute: typeof PostsPostIdRoute
@@ -280,14 +322,16 @@ const PathlessLayoutRouteWithChildren = PathlessLayoutRoute._addFileChildren(
 )
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
+  '/apps': typeof AppsRouteRouteWithChildren
   '/posts': typeof PostsRouteRouteWithChildren
   '/users': typeof UsersRouteRouteWithChildren
   '': typeof PathlessLayoutNestedLayoutRouteWithChildren
-  '/deferred': typeof DeferredRoute
+  '/login': typeof LoginRoute
   '/redirect': typeof RedirectRoute
+  '/apps/$appId': typeof AppsAppIdRoute
   '/posts/$postId': typeof PostsPostIdRoute
   '/users/$userId': typeof UsersUserIdRoute
+  '/apps/': typeof AppsIndexRoute
   '/posts/': typeof PostsIndexRoute
   '/users/': typeof UsersIndexRoute
   '/route-a': typeof PathlessLayoutNestedLayoutRouteARoute
@@ -296,12 +340,13 @@ export interface FileRoutesByFullPath {
 }
 
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
   '': typeof PathlessLayoutNestedLayoutRouteWithChildren
-  '/deferred': typeof DeferredRoute
+  '/login': typeof LoginRoute
   '/redirect': typeof RedirectRoute
+  '/apps/$appId': typeof AppsAppIdRoute
   '/posts/$postId': typeof PostsPostIdRoute
   '/users/$userId': typeof UsersUserIdRoute
+  '/apps': typeof AppsIndexRoute
   '/posts': typeof PostsIndexRoute
   '/users': typeof UsersIndexRoute
   '/route-a': typeof PathlessLayoutNestedLayoutRouteARoute
@@ -311,15 +356,17 @@ export interface FileRoutesByTo {
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
-  '/': typeof IndexRoute
+  '/apps': typeof AppsRouteRouteWithChildren
   '/posts': typeof PostsRouteRouteWithChildren
   '/users': typeof UsersRouteRouteWithChildren
   '/_pathlessLayout': typeof PathlessLayoutRouteWithChildren
-  '/deferred': typeof DeferredRoute
+  '/login': typeof LoginRoute
   '/redirect': typeof RedirectRoute
   '/_pathlessLayout/_nested-layout': typeof PathlessLayoutNestedLayoutRouteWithChildren
+  '/apps/$appId': typeof AppsAppIdRoute
   '/posts/$postId': typeof PostsPostIdRoute
   '/users/$userId': typeof UsersUserIdRoute
+  '/apps/': typeof AppsIndexRoute
   '/posts/': typeof PostsIndexRoute
   '/users/': typeof UsersIndexRoute
   '/_pathlessLayout/_nested-layout/route-a': typeof PathlessLayoutNestedLayoutRouteARoute
@@ -330,14 +377,16 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | '/'
+    | '/apps'
     | '/posts'
     | '/users'
     | ''
-    | '/deferred'
+    | '/login'
     | '/redirect'
+    | '/apps/$appId'
     | '/posts/$postId'
     | '/users/$userId'
+    | '/apps/'
     | '/posts/'
     | '/users/'
     | '/route-a'
@@ -345,12 +394,13 @@ export interface FileRouteTypes {
     | '/posts/$postId/deep'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/'
     | ''
-    | '/deferred'
+    | '/login'
     | '/redirect'
+    | '/apps/$appId'
     | '/posts/$postId'
     | '/users/$userId'
+    | '/apps'
     | '/posts'
     | '/users'
     | '/route-a'
@@ -358,15 +408,17 @@ export interface FileRouteTypes {
     | '/posts/$postId/deep'
   id:
     | '__root__'
-    | '/'
+    | '/apps'
     | '/posts'
     | '/users'
     | '/_pathlessLayout'
-    | '/deferred'
+    | '/login'
     | '/redirect'
     | '/_pathlessLayout/_nested-layout'
+    | '/apps/$appId'
     | '/posts/$postId'
     | '/users/$userId'
+    | '/apps/'
     | '/posts/'
     | '/users/'
     | '/_pathlessLayout/_nested-layout/route-a'
@@ -376,21 +428,21 @@ export interface FileRouteTypes {
 }
 
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
+  AppsRouteRoute: typeof AppsRouteRouteWithChildren
   PostsRouteRoute: typeof PostsRouteRouteWithChildren
   UsersRouteRoute: typeof UsersRouteRouteWithChildren
   PathlessLayoutRoute: typeof PathlessLayoutRouteWithChildren
-  DeferredRoute: typeof DeferredRoute
+  LoginRoute: typeof LoginRoute
   RedirectRoute: typeof RedirectRoute
   PostsPostIdDeepRoute: typeof PostsPostIdDeepRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
+  AppsRouteRoute: AppsRouteRouteWithChildren,
   PostsRouteRoute: PostsRouteRouteWithChildren,
   UsersRouteRoute: UsersRouteRouteWithChildren,
   PathlessLayoutRoute: PathlessLayoutRouteWithChildren,
-  DeferredRoute: DeferredRoute,
+  LoginRoute: LoginRoute,
   RedirectRoute: RedirectRoute,
   PostsPostIdDeepRoute: PostsPostIdDeepRoute,
 }
@@ -405,17 +457,21 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/",
+        "/apps",
         "/posts",
         "/users",
         "/_pathlessLayout",
-        "/deferred",
+        "/login",
         "/redirect",
         "/posts_/$postId/deep"
       ]
     },
-    "/": {
-      "filePath": "index.tsx"
+    "/apps": {
+      "filePath": "apps.route.tsx",
+      "children": [
+        "/apps/$appId",
+        "/apps/"
+      ]
     },
     "/posts": {
       "filePath": "posts.route.tsx",
@@ -437,8 +493,8 @@ export const routeTree = rootRoute
         "/_pathlessLayout/_nested-layout"
       ]
     },
-    "/deferred": {
-      "filePath": "deferred.tsx"
+    "/login": {
+      "filePath": "login.tsx"
     },
     "/redirect": {
       "filePath": "redirect.tsx"
@@ -451,6 +507,10 @@ export const routeTree = rootRoute
         "/_pathlessLayout/_nested-layout/route-b"
       ]
     },
+    "/apps/$appId": {
+      "filePath": "apps.$appId.tsx",
+      "parent": "/apps"
+    },
     "/posts/$postId": {
       "filePath": "posts.$postId.tsx",
       "parent": "/posts"
@@ -458,6 +518,10 @@ export const routeTree = rootRoute
     "/users/$userId": {
       "filePath": "users.$userId.tsx",
       "parent": "/users"
+    },
+    "/apps/": {
+      "filePath": "apps.index.tsx",
+      "parent": "/apps"
     },
     "/posts/": {
       "filePath": "posts.index.tsx",
