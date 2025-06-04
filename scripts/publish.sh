@@ -5,10 +5,19 @@ do
     esac
 done
 
-cd ../expo-updates-client
-npx expo export
-cd ../expo-updates-server
+
+
+# Navigate to tovtam project
+cd ../../tovtam
+npx expo export -p android --dump-sourcemap
+npx sentry-expo-upload-sourcemaps dist
+
+# Navigate back to expo-updates-server
+cd ../Desktop/start-basic
+
+# Create directory and copy files
 rm -rf updates/$directory/
-cp -r ../expo-updates-client/dist/ updates/$directory
+mkdir -p updates/$directory/
+cp -r ../../tovtam/dist/* updates/$directory/
 
 node ./scripts/exportClientExpoConfig.js > updates/$directory/expoConfig.json
