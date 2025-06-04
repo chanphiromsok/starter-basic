@@ -1,7 +1,6 @@
 import { createAPIFileRoute } from "@tanstack/react-start/api";
 import FormData from "form-data";
 import fs from "node:fs/promises";
-
 import {
     convertSHA256HashToUUID,
     createNoUpdateAvailableDirectiveAsync,
@@ -29,7 +28,7 @@ async function getTypeOfUpdateAsync(
 
 export const APIRoute = createAPIFileRoute("/api/manifest")({
   GET: async ({ request }) => {
-    console.log("manifestEndpoint (no-signing) TanStack Start");
+    console.log("manifestEndpoint (no-signing) TanStack Start",request.headers);
 
     const url = new URL(request.url);
     const headers = Object.fromEntries(request.headers.entries());

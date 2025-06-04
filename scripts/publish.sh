@@ -9,8 +9,8 @@ done
 
 # Navigate to tovtam project
 cd ../../tovtam
-npx expo export -p android --dump-sourcemap
-npx sentry-expo-upload-sourcemaps dist
+npx expo export -p android
+# npx sentry-expo-upload-sourcemaps dist
 
 # Navigate back to expo-updates-server
 cd ../Desktop/start-basic
