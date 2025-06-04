@@ -137,18 +137,13 @@ async function putUpdateInResponse(
     updateBundlePath,
     runtimeVersion,
   });
-
-  console.log(
-    "currentUpdateId === convertSHA256HashToUUID(id)",
-    currentUpdateId === convertSHA256HashToUUID(id)
-  );
-
   // NoUpdateAvailable directive only supported on protocol version 1
   // for protocol version 0, serve most recent update as normal
   if (
     currentUpdateId === convertSHA256HashToUUID(id) &&
     protocolVersion === 1
   ) {
+    // will not sent updated if true
     throw new NoUpdateAvailableError();
   }
 
@@ -187,13 +182,16 @@ async function putUpdateInResponse(
     },
   };
 
+  console.log(manifest.launchAsset);
+  
+
   // No signature for no-signing version
-  const assetRequestHeaders: { [key: string]: object } = {};
-  [...manifest.assets, manifest.launchAsset].forEach((asset) => {
-    assetRequestHeaders[asset.key] = {
-      "test-header": "test-header-value",
-    };
-  });
+//   const assetRequestHeaders: { [key: string]: object } = {};
+//   [...manifest.assets, manifest.launchAsset].forEach((asset) => {
+//     assetRequestHeaders[asset.key] = {
+//       "test-header": "test-header-value",
+//     };
+//   });
 
   const form = new FormData();
   form.append("manifest", JSON.stringify(manifest), {
@@ -202,9 +200,9 @@ async function putUpdateInResponse(
       "content-type": "application/json; charset=utf-8",
     },
   });
-  form.append("extensions", JSON.stringify({ assetRequestHeaders }), {
-    contentType: "application/json",
-  });
+//   form.append("extensions", JSON.stringify({ assetRequestHeaders }), {
+//     contentType: "application/json",
+//   });
 
   return new Response(form.getBuffer(), {
     status: 200,
